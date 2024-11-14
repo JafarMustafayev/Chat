@@ -55,12 +55,13 @@ const ChatWindow = () => {
         setIsResending(false);
       }
 
-      const botResponse = res.outputs[0].text.trim();
+      //const botResponse = res.outputs[0].text.trim();
 
       setMessages((prevMessages) => [
         ...prevMessages.slice(0, -1),
         {
-          text: botResponse, //res.response,
+          //text: botResponse,
+          test: res.response,
           isUser: false,
         },
       ]);
