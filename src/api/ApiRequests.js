@@ -1,66 +1,66 @@
 // api.js
-const apiRequest = async (prompt) => {
-  const response = await fetch("https://api.ai21.com/studio/v1/j2-ultra/chat", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer jNuDxuGsMxvxzPPehysZRIUTL6Nhmmeb", // Replace with your AI21 API key
-    },
-    body: JSON.stringify({
-      numResults: 1,
-      temperature: 0.7,
-      messages: [
-        {
-          text: prompt,
-          role: "user",
-        },
-      ],
-      system:
-        "You are an AI assistant. Your responses should be informative and concise.",
-    }),
-  });
 
-  var res = await response.json();
+const apiRequest = async (prompt, model = "llama3.2") => {
+   const endpoint = "http://localhost:11434/api/generate";
 
-  return safeJSONParse(res);
-};
+   const data = {
+     prompt: prompt,
+     model: model,
+     stream: false,
+   };
 
-function safeJSONParse(str) {
-  try {
-    return JSON.parse(str);
-  } catch (e) {
-    return str;
-  }
-}
+   const options = {
+     method: "POST",
+     headers: {
+       "Content-Type": "application/json",
+     },
+     body: JSON.stringify(data),
+   };
 
-export default apiRequest;
+   const response = await fetch(endpoint, options);
 
-// const apiRequest = async (prompt, model = "llama3.2") => {
-//   const endpoint = "http://localhost:11434/api/generate";
+   if (!response.ok) {
+     const errorText = await response.text();
+     throw new Error(
+       `HTTP error! Status: ${response.status}, Message: ${errorText}`
+     );
+   }
+   return await response.json();
+ };
 
-//   const data = {
-//     prompt: prompt,
-//     model: model,
-//     stream: false,
-//   };
+ export default apiRequest;
+//const apiRequest = async (prompt) => {
+//  const response = await fetch("https://api.ai21.com/studio/v1/j2-ultra/chat", {
+//    method: "POST",
+//    headers: {
+//      "Content-Type": "application/json",
+//      Authorization: "Bearer TOKEN", // Replace with your AI21 API key
+//    },
+//    body: JSON.stringify({
+//      numResults: 1,
+//      temperature: 0.7,
+//      messages: [
+//        {
+//          text: prompt,
+//          role: "user",
+//        },
+//      ],
+//      system:
+//        "You are an AI assistant. Your responses should be informative and concise.",
+//    }),
+//  });
 
-//   const options = {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(data),
-//   };
+//  var res = await response.json();
 
-//   const response = await fetch(endpoint, options);
+//  return safeJSONParse(res);
+//};
 
-//   if (!response.ok) {
-//     const errorText = await response.text();
-//     throw new Error(
-//       `HTTP error! Status: ${response.status}, Message: ${errorText}`
-//     );
-//   }
-//   return await response.json();
-// };
+//function safeJSONParse(str) {
+//  try {
+//    return JSON.parse(str);
+//  } catch (e) {
+//    return str;
+//  }
+//}
 
-// export default apiRequest;
+//export default apiRequest;
